@@ -29,8 +29,6 @@ static int read_file(char *filename, int quiet);
 
 static void read_lines(char *filename, FILE * fp);
 
-// maximum line length in an input file (buffer size in read_lines)
-#define MAXLINE 4096
 
 //------------------------------------------------------------------------------
 

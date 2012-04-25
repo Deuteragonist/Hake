@@ -14,10 +14,9 @@
 #include<sys/stat.h>
 #include<sys/time.h>
 
+#include "cmpsc311.h"
 #include "target.h"
 #include "names.h"
-
-#define MAX_LINE 4096
 
 struct list_target target_list;
 
@@ -67,6 +66,7 @@ bool check_age(struct target * aim, struct name * dependencies)
 
    if (t1.tv_sec == 0)
       return true;              // target does not exist
+
    struct timespec t2 = mtime(dependencies->name);      // source
 
    if (t1.tv_sec < t2.tv_sec    // target is older than source
@@ -129,7 +129,7 @@ int goal_run(char *goal)
 {
    struct target *aim = target_lookup(goal);
    struct name *prereq = aim->prereqs;
-   char in[MAX_LINE];
+   char in[MAXLINE];
    int rline = 0;
    bool update = true;
 
@@ -147,10 +147,10 @@ int goal_run(char *goal)
       if (fp == NULL)
          return 1;
       for (int i = 0; i < aim->line_num; i++) {
-         fgets(in, MAX_LINE, fp);
+         fgets(in, MAXLINE, fp);
       }
       do {
-         fgets(in, MAX_LINE, fp);
+         fgets(in, MAXLINE, fp);
          printf("Recipe line %d>> %s", rline++, in);
       } while (in[0] == '\t');
    }

@@ -1,13 +1,8 @@
-/* CMPSC 311, Spring 2012, Project 4
+/* CMPSC 311, Spring 2012, Project 8
  *
- * Author:   <your name>
- * Email:    <your preferred email address>
+ * Author:   Max DeLiso
+ * Email:    jmd5473@psu.edu
  *
-... <additional comment text>
- */
-
-/* base library for CMPSC 311 projects
- * version of 14 Feb. 2012
  */
 
 #ifndef CMPSC311_H
@@ -22,6 +17,11 @@
 extern char *prog;              // program name
 extern int verbose;             // -v option, extra output
                         // -v can be repeated for even more output
+
+// macro definitions
+
+// maximum line length in an input file (buffer size in read_lines)
+#define MAXLINE 4096
 
 //------------------------------------------------------------------------------
 
