@@ -26,7 +26,6 @@ static int read_file(char *filename, int quiet);
   //    the file before and don't need to read it again
   // quiet == 0 enables error messages if the file can't be opened
   // quiet == 1 suppresses error messages if the file can't be opened
-static int inputCatcher(char *filename, int quiet);
 
 static void read_lines(char *filename, FILE * fp);
 

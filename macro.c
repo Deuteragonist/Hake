@@ -48,8 +48,8 @@ struct macro nixed;
 void macro_print(struct macro *current)
 {
    (current->next) == NULL ? (1 + 1) : (macro_print(current->next));
-   printf("\t%s = %s (%i)\n", current->macro, current->result,
-          strlen(current->result));
+   printf("\t%s = %s (%u)\n", current->macro, current->result,
+          (unsigned int) strlen(current->result));
 }
 
 void macro_list_print(void)
