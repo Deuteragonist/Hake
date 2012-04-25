@@ -5,8 +5,8 @@
 
 
 SRC = hake.c
-LIB = cmpsc311.c names.c macro.c
-INC = cmpsc311.h names.h macro.h
+LIB = cmpsc311.c names.c macro.c target.c
+INC = cmpsc311.h names.h macro.h target.h
 
 dummy:
 
@@ -14,7 +14,7 @@ hake-sun: $(SRC) $(LIB) $(INC)
 	c99 -D_XOPEN_SOURCE=600 -v -o hake $(SRC) $(LIB)
 
 hake-gcc: $(SRC) $(LIB) $(INC)
-	gcc -std=c99 -D_XOPEN_SOURCE=600 -Wall -Wextra -o hake $(SRC) $(LIB)
+	gcc -std=c99 -g -D_XOPEN_SOURCE=600 -Wall -Wextra -o hake $(SRC) $(LIB)
 
 hake-mac: $(SRC) $(LIB) $(INC)
 	gcc -std=c99 -Wall -Wextra -o hake $(SRC) $(LIB)

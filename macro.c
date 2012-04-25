@@ -21,7 +21,7 @@
 
 //lol utility
 
-char *strndup(char*str, int len){
+char *Strndup(char*str, int len){
    char* retval = (char*)malloc(len+1);
    strncpy(retval,str,len);
    retval[len] = '\0';
@@ -70,7 +70,6 @@ static struct macro *macro_lookup(char *name){
       current = current->next;
   }while(current != NULL);
   return NULL;
-  
 }
 
 char *macro_body(char *name)
@@ -138,13 +137,13 @@ void macro_expand(char *in, char *out){
   char * temp = NULL;
   char * expand = NULL;
   out[0] = '\0';
-  for(i = 0; i < strlen(in); i++){
+  for(i = 0; i < (int)strlen(in); i++){
     
     if(*(in+i) == '$'){
-      for(j = 1; j < strlen(in)-i; j++){
+      for(j = 1; j < (int)strlen(in)-i; j++){
          
          if(*(in+i+j) == '}'){
-            temp = strndup(in+i+2,j-2); //char*,sizeof
+            temp = Strndup(in+i+2,j-2); //char*,sizeof
             expand = macro_body(temp);
             free(temp);
             temp = NULL;
@@ -184,13 +183,13 @@ int macro_expand_length(char *in)
   int i = 0, j = 0, len = 0;
   char * temp = NULL;
   char * expand = NULL;
-  for(i = 0; i < strlen(in); i++){
+  for(i = 0; i < (int)strlen(in); i++){
     
     if(*(in+i) == '$'){
-      for(j = 1; j < strlen(in)-i; j++){
+      for(j = 1; j < (int)strlen(in)-i; j++){
          
          if(*(in+i+j) == '}'){
-            temp = strndup(in+i+2,j-2); //char*,sizeof
+            temp = Strndup(in+i+2,j-2); //char*,sizeof
             expand = macro_body(temp);
             free(temp);
             temp = NULL;

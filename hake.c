@@ -31,7 +31,7 @@
 #include "cmpsc311.h"
 #include "names.h"
 #include "macro.h"
-
+#include "target.h"
 //------------------------------------------------------------------------------
 
 static int read_file(char *filename, int quiet);
@@ -40,6 +40,8 @@ static int read_file(char *filename, int quiet);
   //    the file before and don't need to read it again
   // quiet == 0 enables error messages if the file can't be opened
   // quiet == 1 suppresses error messages if the file can't be opened
+static int inputCatcher(char* filename, int quiet);
+
 
 static void read_lines(char *filename, FILE *fp);
 
@@ -97,6 +99,7 @@ int main(int argc, char *argv[])
 
   // scan the argv array again, from the beginning
   optind = 1;
+  
   while ((ch = getopt(argc, argv, ":hvf:")) != -1)
     {
       switch (ch) {
@@ -106,15 +109,14 @@ int main(int argc, char *argv[])
         case 'v':
           // verbose++;
           break;
-	case 'f':
-	  f_flag++;		// number of -f options supplied
-	  (void) read_file(optarg, 0);
-	  break;
+		    case 'f':
+	  	    (void) read_file(optarg, 0);
+	  	    break;
         case '?':
           fprintf(stderr, "%s: invalid option '%c'\n", prog, optopt);
           usage(EXIT_FAILURE);
           break;
-        case ':':
+          case ':':
           fprintf(stderr, "%s: invalid option '%c' (missing argument)\n", prog, optopt);
           usage(EXIT_FAILURE);
           break;
@@ -124,7 +126,7 @@ int main(int argc, char *argv[])
       }
     }
 
-  if (f_flag == 0 && !read_file("hakefile", 1) && !read_file("Hakefile", 1))
+	if (f_flag == 0 && !read_file("hakefile", 1) && !read_file("Hakefile", 1))
     {
       fprintf(stderr, "%s: no input\n", prog);
       usage(EXIT_FAILURE);
@@ -135,6 +137,7 @@ int main(int argc, char *argv[])
   for (int i = optind; i < argc; i++)
     {
       printf("  target selected: %s\n", argv[i]);
+      goal_run(argv[i]);
     }
 
   return status;
@@ -182,17 +185,14 @@ static int read_file(char *filename, int quiet)
 	fprintf(stderr, "%s: could not open input file %s: %s\n", prog, filename, strerror(errno));
       return 0;
     }
-
   read_lines(filename, fp);
-
+  
   if (fclose(fp) != 0)
     {
       fprintf(stderr, "%s: could not close input file %s: %s\n", prog, filename, strerror(errno));
     }
-
   return 1;
 }
-
 //------------------------------------------------------------------------------
 
 static void read_lines(char *filename, FILE *fp)
@@ -250,16 +250,19 @@ static void read_lines(char *filename, FILE *fp)
 
     if (buffer[0] == '\t')
       {
-	recipe_line_number++;
+		recipe_line_number++;
         if (verbose > 0) printf("  >>> recipe line %d\n", recipe_line_number);
 	// (save this for a later project)
       }
     else if (p_colon != NULL)
       {
-	recipe_line_number = 0;
-        if (verbose > 0) printf("  >>> target-prerequisite\n");
-	// (save this for a later project)
-      }
+		  recipe_line_number = 0;
+      if (verbose > 0) printf("  >>> target-prerequisite\n");
+		  char *name = (char*)malloc(4096);
+		  strncpy(name,buf,(size_t)(p_colon-buf-1));
+		  goal_set(name,p_colon+1,line_number,filename); //goal_set: Take the name of a target and space separated requirements
+      free(name);       //return void; modify a data structure containing a list of targets
+	    }							  
     else if (p_equal != NULL)
       {
         if (verbose > 0){
