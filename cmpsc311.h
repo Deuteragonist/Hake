@@ -19,9 +19,9 @@
 
 // global variables set from the command line
 
-extern char *prog;	// program name
-extern int verbose;	// -v option, extra output
-			// -v can be repeated for even more output
+extern char *prog;              // program name
+extern int verbose;             // -v option, extra output
+                        // -v can be repeated for even more output
 
 //------------------------------------------------------------------------------
 
@@ -36,7 +36,8 @@ const char *safe_string(const char *str);
 
 #define verify(tf, msg) cmpsc311_verify(tf, msg, __func__, __LINE__)
 
-void cmpsc311_verify(const bool tf, const char *msg				, const char *func, const int line);
+void cmpsc311_verify(const bool tf, const char *msg, const char *func,
+                     const int line);
 
 //------------------------------------------------------------------------------
 
@@ -49,11 +50,11 @@ void cmpsc311_verify(const bool tf, const char *msg				, const char *func, const
 #define Strdup(s1) cmpsc311_strdup(s1, __func__, __LINE__)
 #define Fopen(filename,mode) cmpsc311_fopen(filename, mode, __func__, __LINE__)
 
-void *cmpsc311_malloc(size_t size						, const char *func, const int line);
-char *cmpsc311_strdup(const char *s1						, const char *func, const int line);
-FILE *cmpsc311_fopen(const char *restrict filename, const char *restrict mode	, const char *func, const int line);
+void *cmpsc311_malloc(size_t size, const char *func, const int line);
+char *cmpsc311_strdup(const char *s1, const char *func, const int line);
+FILE *cmpsc311_fopen(const char *restrict filename, const char *restrict mode,
+                     const char *func, const int line);
 
 //------------------------------------------------------------------------------
 
 #endif
-
