@@ -17,6 +17,8 @@
 #include "target.h"
 #include "names.h"
 
+#define MAX_LINE 4096
+
 struct list_target target_list;
 
 static struct timespec mtime(const char *file)
@@ -127,7 +129,7 @@ int goal_run(char *goal)
 {
    struct target *aim = target_lookup(goal);
    struct name *prereq = aim->prereqs;
-   char in[4096];
+   char in[MAX_LINE];
    int rline = 0;
    bool update = true;
 
@@ -145,11 +147,11 @@ int goal_run(char *goal)
       if (fp == NULL)
          return 1;
       for (int i = 0; i < aim->line_num; i++) {
-         fgets(in, 4096, fp);
+         fgets(in, MAX_LINE, fp);
       }
       do {
-         fgets(in, 4096, fp);
-         printf("Recipie line %d>> %s", rline++, in);
+         fgets(in, MAX_LINE, fp);
+         printf("Recipe line %d>> %s", rline++, in);
       } while (in[0] == '\t');
    }
    return 0;
