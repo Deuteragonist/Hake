@@ -63,11 +63,16 @@ static struct target *target_lookup(char *name)
 bool check_age(struct target * aim, struct name * dependencies)
 {
    struct timespec t1 = mtime(aim->name);       // target
+   struct timespec t2 = mtime(dependencies->name);      // source
+   if (t2.tv_sec == 0){
+      fprintf(stderr,"./hake: no rule to make %s, needed by %s. Stopping\n",
+              dependencies->name,aim->name);
+      exit(EXIT_FAILURE);
+   }
    if (t1.tv_sec == 0){
       if(verbose > 0) printf("target %s does not exist\n",aim->name);
       return true;              // target does not exist
    }
-   struct timespec t2 = mtime(dependencies->name);      // source
    if(verbose > 0){
       printf("target %s made at %u.%u; dependency %s made at %u.%u\n",
             aim->name,(unsigned int)t1.tv_sec,(unsigned int)t1.tv_nsec,
@@ -176,11 +181,11 @@ void target_free(){
    struct name * n = NULL;
    for (struct target * p = target_list.head; p != NULL; p = p->next) {
       free(t);               // free(NULL) is harmless
-      printf("target: %s_\n",p->name);
+      //printf("target: %s_\n",p->name);
       free(p->name);
       for(struct name * s = p->prereqs; s != NULL; s = s->next){
          free(n);
-         printf("dependency: %s_\n",s->name);
+         //printf("dependency: %s_\n",s->name);
          free(s->name);
          n = s;
       }
