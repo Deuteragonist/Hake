@@ -60,9 +60,9 @@ void macro_list_print(void)
    printf("\t-- end of list\n");
 }
 
+/*
 static struct macro *macro_lookup(char *name)
 {
-
    struct macro *current = &(macro_list);
    do {
       if (strcmp(current->macro, name) == 0)
@@ -71,7 +71,7 @@ static struct macro *macro_lookup(char *name)
          current = current->next;
    } while (current != NULL);
    return NULL;
-}
+}*/
 
 char *macro_body(char *name)
 {
