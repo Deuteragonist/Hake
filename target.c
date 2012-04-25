@@ -63,7 +63,6 @@ static struct target *target_lookup(char *name)
 bool check_age(struct target * aim, struct name * dependencies)
 {
    struct timespec t1 = mtime(aim->name);       // target
-   
    if (t1.tv_sec == 0){
       if(verbose > 0) printf("target %s does not exist\n",aim->name);
       return true;              // target does not exist
@@ -85,19 +84,23 @@ void parse_args(struct target *newTarget, char *prereqs)
 {
    int startofline = 0;
    char *prereq;
+   bool spaceFlag = (prereqs[0] == ' ');
    struct name *name;
    struct name *tail = newTarget->prereqs;
-   for (int i = 0; i < (int)strlen(prereqs); i++) {
-      if ((prereqs[i] == ' ' )||(i == (int)strlen(prereqs)-1)) {
-         if ((startofline == i)&&(i != (int)strlen(prereqs)-1)) {
-            startofline++;
-         } else {
+   for (int i = 0; i <= (int)strlen(prereqs); i++) {
+      if ((prereqs[i] == ' ' )||(i == (int)strlen(prereqs))){
+         if(spaceFlag){
+           startofline++;
+         }
+         else{
             prereq = (char *)malloc(i - startofline + 1);
-            for (int j = startofline; j <= i; j++) {
+            for (int j = startofline; j < i; j++) {
                prereq[j - startofline] = prereqs[j];
             }
             name = (struct name *)malloc(sizeof(struct name));
             name->name = prereq;
+            startofline = i+1;  
+            spaceFlag = true;
             if (tail == NULL) {
                newTarget->prereqs = name;
                tail = name;
@@ -107,6 +110,9 @@ void parse_args(struct target *newTarget, char *prereqs)
             }
          }
       }
+      else if(spaceFlag){
+         spaceFlag = false;
+      }
    }
 }
 
@@ -115,7 +121,10 @@ void goal_set(char *name, char *prereqs, int line_num, char *file)
    struct target *newTarget = malloc(sizeof(struct target));
    if (target_list.name == NULL)
       target_list.name = strdup(file);
-   newTarget->name = strdup(name);
+   for(int i = strlen(name)-1; i>=0; i--){
+      if(name[i] != ' ')     
+        newTarget->name = strndup(name,(size_t)(i+1));
+   }
    parse_args(newTarget, prereqs);
    newTarget->line_num = line_num;
 
@@ -167,9 +176,11 @@ void target_free(){
    struct name * n = NULL;
    for (struct target * p = target_list.head; p != NULL; p = p->next) {
       free(t);               // free(NULL) is harmless
+      printf("target: %s_\n",p->name);
       free(p->name);
       for(struct name * s = p->prereqs; s != NULL; s = s->next){
          free(n);
+         printf("dependency: %s_\n",s->name);
          free(s->name);
          n = s;
       }
