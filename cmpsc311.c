@@ -115,3 +115,44 @@ FILE *cmpsc311_fopen(const char *restrict filename, const char *restrict mode,
 }
 
 //------------------------------------------------------------------------------
+//#define strndup(s,n) cmpsc311_strndup(s,n, __func__, __LINE__)
+char *cmpsc311_strndup(
+   const char *s,
+   const size_t n,
+   const char *func,
+   const int line)
+{
+   size_t slen;
+   size_t copyLen;
+   char *ptr;
+
+   slen = strlen(s);
+   ptr = memchr(s, '\0', n);
+
+   /* p contains the fist occurrence of a null byte in s,
+    * or NULL if there is no such occurrence.
+    * If p is NULL then we use either n or the length
+    * of s, depending on which is smaller, to calculate
+    * how many characters we're going to copy from s.
+    * If p is non-NULL, we can subtract s from p,
+    * which gives the length of the string we need to copy.
+    */
+   if (ptr == NULL) {
+      copyLen = (n < slen) ? (n) : (slen);
+   } else {
+      copyLen = (size_t) (ptr - s);
+   }
+
+   /* we add one to account for the NULL terminator */
+   ptr = malloc(copyLen + 1);
+   memcpy(ptr, s, copyLen);
+
+   /* and NULL terminate the resulting string */
+   ptr[copyLen] = '\0';
+
+   if(verbose)
+      printf("strndup(%zd, %zd) at %p from %s line %d\n",
+      strlen(s) + 1, n, ptr, func, line);
+
+   return ptr;
+}

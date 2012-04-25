@@ -63,12 +63,17 @@ static struct target *target_lookup(char *name)
 bool check_age(struct target * aim, struct name * dependencies)
 {
    struct timespec t1 = mtime(aim->name);       // target
-
-   if (t1.tv_sec == 0)
+   
+   if (t1.tv_sec == 0){
+      if(verbose > 0) printf("target %s does not exist\n",aim->name);
       return true;              // target does not exist
-
+   }
    struct timespec t2 = mtime(dependencies->name);      // source
-
+   if(verbose > 0){
+      printf("target %s made at %u.%u; dependency %s made at %u.%u\n",
+            aim->name,(unsigned int)t1.tv_sec,(unsigned int)t1.tv_nsec,
+            dependencies->name,(unsigned int)t2.tv_sec,(unsigned int)t2.tv_nsec); 
+   }
    if (t1.tv_sec < t2.tv_sec    // target is older than source
        || ((t1.tv_sec == t2.tv_sec) && (t1.tv_nsec < t2.tv_nsec)))
       return true;
@@ -82,14 +87,13 @@ void parse_args(struct target *newTarget, char *prereqs)
    char *prereq;
    struct name *name;
    struct name *tail = newTarget->prereqs;
-
    for (int i = 0; i < (int)strlen(prereqs); i++) {
-      if (prereqs[i] == ' ' || prereqs[i] == '\n') {
-         if (startofline == i) {
+      if ((prereqs[i] == ' ' )||(i == (int)strlen(prereqs)-1)) {
+         if ((startofline == i)&&(i != (int)strlen(prereqs)-1)) {
             startofline++;
          } else {
-            prereq = (char *)malloc(i - startofline);
-            for (int j = startofline; j < i; j++) {
+            prereq = (char *)malloc(i - startofline + 1);
+            for (int j = startofline; j <= i; j++) {
                prereq[j - startofline] = prereqs[j];
             }
             name = (struct name *)malloc(sizeof(struct name));
@@ -108,7 +112,6 @@ void parse_args(struct target *newTarget, char *prereqs)
 
 void goal_set(char *name, char *prereqs, int line_num, char *file)
 {
-
    struct target *newTarget = malloc(sizeof(struct target));
    if (target_list.name == NULL)
       target_list.name = strdup(file);
@@ -126,13 +129,14 @@ void goal_set(char *name, char *prereqs, int line_num, char *file)
 }
 
 int goal_run(char *goal)
-{
-   struct target *aim = target_lookup(goal);
+{ 
+   struct target *aim = ((goal == NULL) ? target_list.head : target_lookup(goal));
+   if(aim == NULL) return 1;
    struct name *prereq = aim->prereqs;
+
    char in[MAXLINE];
    int rline = 0;
    bool update = true;
-
    while (prereq != NULL) {
       if (target_lookup(prereq->name) != NULL)
          goal_run(prereq->name);

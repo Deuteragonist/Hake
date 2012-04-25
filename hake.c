@@ -112,6 +112,8 @@ int main(int argc, char *argv[])
       usage(EXIT_FAILURE);
    }
    // ok, we got all this data, now what?
+   if(optind == argc)
+      goal_run(NULL);
 
    for (int i = optind; i < argc; i++) {
       printf("  target selected: %s\n", argv[i]);
@@ -252,8 +254,8 @@ static void read_lines(char *filename, FILE * fp)
          recipe_line_number = 0;
          if (verbose > 0)
             printf("  >>> target-prerequisite\n");
-         char *name = (char *)malloc(4096);
-         strncpy(name, buf, (size_t) (p_colon - buf - 1));
+        // char *name = (char *)malloc(4096);
+         char*name = strndup(buf, (size_t) (p_colon - buf ));
          goal_set(name, p_colon + 1, line_number, filename);    //goal_set: Take the name of a target and space separated requirements
          free(name);            //return void; modify a data structure containing a list of targets
       } else if (p_equal != NULL) {

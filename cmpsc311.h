@@ -49,11 +49,14 @@ void cmpsc311_verify(const bool tf, const char *msg, const char *func,
 #define Malloc(size) cmpsc311_malloc(size, __func__, __LINE__)
 #define Strdup(s1) cmpsc311_strdup(s1, __func__, __LINE__)
 #define Fopen(filename,mode) cmpsc311_fopen(filename, mode, __func__, __LINE__)
+#define strndup(s,n) cmpsc311_strndup(s,n, __func__, __LINE__)
+
 
 void *cmpsc311_malloc(size_t size, const char *func, const int line);
 char *cmpsc311_strdup(const char *s1, const char *func, const int line);
 FILE *cmpsc311_fopen(const char *restrict filename, const char *restrict mode,
                      const char *func, const int line);
+char *cmpsc311_strndup(const char *s, size_t n, const char * func, const int line);
 
 //------------------------------------------------------------------------------
 
