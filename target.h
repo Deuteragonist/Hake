@@ -25,5 +25,6 @@ extern struct list_target target_list;
 void goal_set(char *name, char *prereqs, int line_num, char *file);
 void parse_args(struct target *newTarget, char *prereqs);
 int goal_run(char *name);
+void target_free();
 
 #endif

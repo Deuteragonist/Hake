@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
       printf("  target selected: %s\n", argv[i]);
       goal_run(argv[i]);
    }
-
+   target_free();
    return status;
 }
 

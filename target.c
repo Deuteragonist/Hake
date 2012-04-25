@@ -160,3 +160,21 @@ int goal_run(char *goal)
    }
    return 0;
 }
+
+void target_free(){
+   free(target_list.name);
+   struct target* t = NULL;
+   struct name * n = NULL;
+   for (struct target * p = target_list.head; p != NULL; p = p->next) {
+      free(t);               // free(NULL) is harmless
+      free(p->name);
+      for(struct name * s = p->prereqs; s != NULL; s = s->next){
+         free(n);
+         free(s->name);
+         n = s;
+      }
+      t = p;
+   }
+   free(t);                  // prev == list->tail
+   free(n);
+}
